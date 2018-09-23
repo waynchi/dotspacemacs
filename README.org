@@ -1,0 +1,24 @@
+* Installation
+   Backup and delete your ~/.emacs and ~/.emacs.d, then go to your =home= directory:
+
+   #+BEGIN_SRC text
+   $ git clone https://github.com/syl20bnr/spacemacs.git .emacs.d
+   $ cd .emacs.d
+   #+END_SRC
+
+   That's for spacemacs 'master' branch. Now my own
+   configuration, again, at your =home= directory:
+
+   #+BEGIN_SRC text
+   $ git clone https://github.com/stotok/dotspacemacs.git
+   $ ln -s dotspacemacs/.spacemacs .
+   #+END_SRC
+
+* Bug Fixes
+  You might run into a bug with spacelpa-0.300.tar.gz. In order to fix that use the following commands.
+  
+  #+BEGIN_SRC text
+    $ cd ~/.emacs.d/.cache/stable-elpa/25.3.1
+    $ tar -xzvf spacelpa-0.300.tar.gz
+    $ echo -n "0.300" > version
+  #+END_SRC
