@@ -6,8 +6,13 @@
    $ cd .emacs.d
    #+END_SRC
 
-   That's for spacemacs 'master' branch. Now my own
-   configuration, again, at your =home= directory:
+   That's for spacemacs 'master' branch. 
+   Checkout to the 'develop' branch.
+   #+BEGIN_SRC text
+   $ git checkout develop
+   #+END_SRC
+   
+   Now my own configuration, again, at your =home= directory:
 
    #+BEGIN_SRC text
    $ git clone https://github.com/stotok/dotspacemacs.git
