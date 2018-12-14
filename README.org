@@ -15,7 +15,7 @@
    Now my own configuration, again, at your =home= directory:
 
    #+BEGIN_SRC text
-   $ git clone https://github.com/stotok/dotspacemacs.git
+   $ git clone https://github.com/waynchi/dotspacemacs.git
    $ ln -s dotspacemacs/.spacemacs .
    #+END_SRC
 
