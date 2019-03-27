@@ -38,6 +38,7 @@ This function should only modify configuration layer settings."
      rust
      (c-c++ :variables c-c++-default-mode-for-headers 'c++-mode)
      (c-c++ :variables c-c++-backend 'lsp)
+     ;; (c-c++ :variables c-c++-enable-clang-support t)
      csv
      html
      python
@@ -50,10 +51,11 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      helm
      auto-completion
+     themes-megapack
      ;; better-defaults
      emacs-lisp
      git
-     markdown
+     (markdown :variables markdown-live-preview-engine 'vmd)
      neotree
      ;; org
      latex
@@ -72,7 +74,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(exec-path-from-shell cquery)
+   dotspacemacs-additional-packages '(exec-path-from-shell cquery modern-cpp-font-lock)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -356,7 +358,7 @@ It should only modify the values of Spacemacs settings."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers 'relative
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
@@ -449,6 +451,10 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  dotspacemacs-themes '(dracula)
+  (defun my-c-mode-hook ()
+    (c-set-offset 'arglist-intro +)
+    (c-set-offset 'case-label +))
   )
 
 (defun dotspacemacs/user-load ()
@@ -457,6 +463,7 @@ This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
 dump."
   )
+
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -471,7 +478,7 @@ before packages are loaded."
   ;; cquery
   (require 'cquery)
   (setq cquery-executable "~/dev/cquery/build/release/bin/cquery")
-  ;; (defun cquery//enable ()
+  ;; ;; (defun cquery//enable ()
   ;;   (condition-case nil
   ;;       (lsp-cquery-enable)
   ;;     (user-error nil)))
@@ -521,7 +528,7 @@ before packages are loaded."
 
   (setq exec-path (append exec-path '("/usr/bin/clang")))
 
-   ;; Setup helm-resume
+  ;; Setup helm-resume
    (spacemacs/set-leader-keys "sR" 'helm-resume)
 
    ;; Evil insert mode key bindings
@@ -537,7 +544,25 @@ before packages are loaded."
    ;; Set fly check to only occur upon save
    (setq flycheck-check-syntax-automatically '(save mode-enable))
    ;; the default value was '(save idle-change new-line mode-enabled)
-  )
+
+   ;; Additional user hotkeys
+   (spacemacs/set-leader-keys "ofr" 'xref-find-references)
+
+   ;; modern-c++
+   (require 'modern-cpp-font-lock)
+   (modern-c++-font-lock-global-mode t)
+
+   ;; c++ indentation
+
+   ;; (c-set-offset 'arglist-intro +)
+   ;; (c-set-offset 'case-label +)
+   (add-hook 'c-mode-hook '(lambda()
+                             (c-set-offset 'arglist-intro +)
+                             (c-set-offset 'case-label +)))
+   ;; (add-hook 'c-mode-hook 'c-set-offset 'arglist-intro +)
+   ;; (add-hook 'c-mode-hook 'c-set-offset 'case-label +)
+)
+
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -553,7 +578,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet-snippets writeroom-mode visual-fill-column symon string-inflection spaceline-all-the-icons prettier-js pippel pipenv password-generator overseer nameless magit-svn lsp-ui json-navigator hierarchy importmagic epc ctable concurrent deferred impatient-mode helm-xref helm-rtags helm-purpose window-purpose imenu-list helm-git-grep helm-ctest google-c-style gitignore-templates flycheck-rtags evil-lion evil-goggles evil-cleverparens paredit editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize counsel-projectile counsel swiper ivy company-rtags rtags company-lsp cmake-ide levenshtein centered-cursor-mode ccls font-lock+ dotenv-mode toml-mode racer helm-company helm-c-yasnippet fuzzy flycheck-rust flycheck-pos-tip pos-tip flycheck disaster cquery lsp-mode ht company-web web-completion-data company-tern tern company-statistics company-c-headers company-auctex company-anaconda company cmake-mode clang-format cargo rust-mode auto-yasnippet auctex-latexmk auctex ac-ispell auto-complete yapfify ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox spinner orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc indent-guide hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub treepy let-alist graphql with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight emmet-mode elisp-slime-nav dumb-jump diminish define-word cython-mode csv-mode column-enforce-mode coffee-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (modern-cpp-font-lock toml-mode racer helm-company helm-c-yasnippet fuzzy flycheck-rust flycheck-pos-tip pos-tip flycheck disaster cquery lsp-mode ht company-web web-completion-data company-tern tern company-statistics company-c-headers company-auctex company-anaconda company cmake-mode clang-format cargo rust-mode auto-yasnippet auctex-latexmk auctex ac-ispell auto-complete yapfify ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox spinner orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc indent-guide hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub treepy let-alist graphql with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight emmet-mode elisp-slime-nav dumb-jump diminish define-word cython-mode csv-mode column-enforce-mode coffee-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
